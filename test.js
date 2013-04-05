@@ -9,7 +9,10 @@ var rl = readline.createInterface({
 	terminal: true
 });
 
-var modem = new PLM(process.argv[2]);
+var modem = new PLM(process.argv[2], function(data){
+	rl.write(JSON.stringify(data));
+	rl.prompt();
+});
 
 function completer(line){
 	return [[], ""];
