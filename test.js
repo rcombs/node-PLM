@@ -21,8 +21,7 @@ var modem = new PLM(process.argv[2], function(data){
 });
 
 modem.on("error", function(data){
-	rl.write(data);
-	rl.write("\n");
+	rl.write(data.toString() + "\n");
 	rl.prompt();
 });
 
