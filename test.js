@@ -20,6 +20,12 @@ var modem = new PLM(process.argv[2], function(data){
 	rl.prompt();
 });
 
+modem.on("error", function(data){
+	rl.write(data);
+	rl.write("\n");
+	rl.prompt();
+});
+
 function completer(line){
 	return [[], ""];
 }
