@@ -1,0 +1,28 @@
+{
+  "name": "PLM",
+  "version": "0.0.0",
+  "description": "Event-rich bidirectional communication with INSTEON PowerLinc modems",
+  "main": "./lib/PLM.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "PLMsh": "./test.js"
+  },
+  "dependencies": {
+    "serialport": "1.1.0"
+  },
+  "repository": "",
+  "keywords": [
+    "PLM",
+    "INSTEON",
+    "Home",
+    "Automation",
+    "Automation",
+    "Control",
+    "Serial",
+    "Serialport"
+  ],
+  "author": "Rodger Combs",
+  "license": "BSD"
+}
