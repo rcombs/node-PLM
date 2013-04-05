@@ -26,7 +26,9 @@ var commands = {
 		modem.sendINSTEON({
 			to: new Buffer(to, "hex"),
 			cmd: new Buffer(cmd, "hex"),
-			hops: parseInt(hops, 10)
+			flags: {
+				hops: parseInt(hops, 10)
+			}
 		}, function(response){
 			rl.write(JSON.stringify(response));
 			rl.prompt();
