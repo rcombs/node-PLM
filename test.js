@@ -10,7 +10,13 @@ var rl = readline.createInterface({
 });
 
 var modem = new PLM(process.argv[2], function(data){
-	rl.write(JSON.stringify(data));
+	rl.write(
+		"Connected to PLM.\n" +
+		"ID: " + PLM.util.makeHex(data.id) + "\n" +
+		"Device Category: " + PLM.util.makeHex(data.deviceCategory) + "\n" +
+		"Device Subcategory: " + PLM.util.makeHex(data.deviceSubcategory) + "\n" +
+		"Firmware Version: " + PLM.util.makeHex(data.firmwareVersion) + "\n"
+	);
 	rl.prompt();
 });
 
