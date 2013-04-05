@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 var PLM = require("./"),
+	util = PLM.util,
 	readline = require("readline");
 
 var rl = readline.createInterface({
@@ -10,18 +11,18 @@ var rl = readline.createInterface({
 });
 
 var modem = new PLM(process.argv[2], function(data){
-	rl.write(
+	console.log(
 		"Connected to PLM.\n" +
-		"ID: " + PLM.util.makeHex(data.id) + "\n" +
-		"Device Category: " + PLM.util.makeHex(data.deviceCategory) + "\n" +
-		"Device Subcategory: " + PLM.util.makeHex(data.deviceSubcategory) + "\n" +
-		"Firmware Version: " + PLM.util.makeHex(data.firmwareVersion) + "\n"
+		"ID: " + util.makeHex(data.id) + "\n" +
+		"Device Category: " + util.makeHex(data.deviceCategory) + "\n" +
+		"Device Subcategory: " + util.makeHex(data.deviceSubcategory) + "\n" +
+		"Firmware Version: " + util.makeHex(data.firmwareVersion)
 	);
 	rl.prompt();
 });
 
-modem.on("error", function(data){
-	rl.write(data.toString() + "\n");
+modem.on("error", function(err){
+	console.error(err.toString());
 	rl.prompt();
 });
 
@@ -32,7 +33,7 @@ function completer(line){
 var commands = {
 	sendCommand: function(hex){
 		modem.sendCommand(new Buffer(hex, "hex"), function(ACK, cmd, data){
-			rl.write("ACK:" + ACK + "; CMD:" + cmd + "; DATA: " + data);
+			console.log("ACK:" + ACK + "; CMD:" + util.makeHex(cmd) + "; DATA: " + util.makeHex(data));
 			rl.prompt();
 		});
 	},
@@ -44,7 +45,7 @@ var commands = {
 				hops: parseInt(hops, 10)
 			}
 		}, function(response){
-			rl.write(JSON.stringify(response));
+			console.log(JSON.stringify(response));
 			rl.prompt();
 		});
 	}
@@ -55,7 +56,7 @@ rl.on("line", function(line){
 	if(args[0] in commands){
 		commands[args[0]].apply(this, args.slice(1));
 	}else{
-		rl.write("Command not found: " + args[0] + ". Type `help` for a list.");
+		console.error("Command not found: " + args[0] + ". Type `help` for a list.");
 		rl.prompt();
 	}
 });
