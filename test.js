@@ -12,7 +12,7 @@ var rl = readline.createInterface({
 
 var modem = new PLM(process.argv[2], function(data){
 	console.log(
-		"Connected to PLM.\n" +
+		"Connected to PLM\n" +
 		"ID: " + util.makeHex(data.id) + "\n" +
 		"Device Category: " + util.makeHex(data.deviceCategory) + "\n" +
 		"Device Subcategory: " + util.makeHex(data.deviceSubcategory) + "\n" +
@@ -30,17 +30,22 @@ function completer(line){
 	return [[], ""];
 }
 
+var helpCmds = {
+	sendCommand: "",
+	sendDirect: ""
+}
+
 var commands = {
-	sendCommand: function(hex){
-		modem.sendCommand(new Buffer(hex, "hex"), function(ACK, cmd, data){
+	sendCommand: function(){
+		modem.sendCommand(util.parseHex(arguments), function(ACK, cmd, data){
 			console.log("ACK:" + ACK + "; CMD:" + util.makeHex(cmd) + "; DATA: " + util.makeHex(data));
 			rl.prompt();
 		});
 	},
 	sendDirect: function(to, cmd, hops){
 		modem.sendINSTEON({
-			to: new Buffer(to, "hex"),
-			cmd: new Buffer(cmd, "hex"),
+			to: util.parseHex(to),
+			cmd: util.parseHex(cmd),
 			flags: {
 				hops: parseInt(hops, 10)
 			}
@@ -48,6 +53,15 @@ var commands = {
 			console.log(JSON.stringify(response));
 			rl.prompt();
 		});
+	},
+	help: function(command){
+		if(command in helpCmds){
+			console.log(helpCmds[command]);
+			rl.prompt();
+		}else{
+			console.log("Available commands: " + Object.keys(helpCmds).sort().join(", "));
+			rl.prompt();
+		}
 	}
 };
 
