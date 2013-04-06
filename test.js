@@ -38,7 +38,7 @@ var helpCmds = {
 var commands = {
 	sendCommand: function(){
 		rl.pause();
-		modem.sendCommand(util.parseHex(arguments), function(ACK, cmd, data){
+		modem.sendCommand(util.parseHex(Array.prototype.slice.call(arguments)), function(ACK, cmd, data){
 			console.log("ACK:" + ACK + "; CMD:" + util.makeHex(cmd) + "; DATA: " + util.makeHex(data));
 			rl.resume();
 			rl.prompt();
