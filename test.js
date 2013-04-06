@@ -37,12 +37,15 @@ var helpCmds = {
 
 var commands = {
 	sendCommand: function(){
+		rl.pause();
 		modem.sendCommand(util.parseHex(arguments), function(ACK, cmd, data){
 			console.log("ACK:" + ACK + "; CMD:" + util.makeHex(cmd) + "; DATA: " + util.makeHex(data));
+			rl.resume();
 			rl.prompt();
 		});
 	},
 	sendDirect: function(to, cmd, hops){
+		rl.pause();
 		modem.sendINSTEON({
 			to: util.parseHex(to),
 			command: util.parseHex(cmd),
@@ -51,6 +54,7 @@ var commands = {
 			}
 		}, function(response){
 			console.log(JSON.stringify(response));
+			rl.resume();
 			rl.prompt();
 		});
 	},
