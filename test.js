@@ -45,9 +45,9 @@ var commands = {
 	sendDirect: function(to, cmd, hops){
 		modem.sendINSTEON({
 			to: util.parseHex(to),
-			cmd: util.parseHex(cmd),
+			command: util.parseHex(cmd),
 			flags: {
-				hops: parseInt(hops, 10)
+				maxHops: parseInt(hops, 10)
 			}
 		}, function(response){
 			console.log(JSON.stringify(response));
