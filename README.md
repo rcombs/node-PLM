@@ -1,4 +1,4 @@
-PLM is a Node.js library for bidirectional, event-rich communication with INSTEON PowerLinc USB and RS232 modems.
+PLM is a Node.js library for bidirectional, event-rich communication with INSTEON PowerLinc USB and RS232 modems.  
 This documentation is not yet complete, and some parts of the API are subject to change without notice. Check CHANGELOG.md before updating.
 
 Basic Use
@@ -67,22 +67,22 @@ API
 
 Class: PLM
 ----------
-The `PLM` class can be accessed using `require("plm")`. It's the root class for the entire library, and you connect to an INSTEON modem by instantiating it. These docs will assume that you call `var PLM = require("plm");`.
-Calling `new PLM("/dev/usbTTY0", callback)` (or wherever the serial port is [NOTE: `PLM` will NOT attempt to auto-detect your modem's serialport. This may change in the future, but for now, assume it won't]) will connect to the modem using the `serialport` module. These docs will assume that you call `var modem = new PLM(path, callback)`.
-Once it's connected, `PLM` will send your modem the command `GET_IM_INFO (0x60)`. The modem will reply with some information about itself, including its hardcoded INSTEON ID, its Device Category, its Device Subcategory, and its firmware version. An object containing these will be passed as the first argument to the `callback` function; we'll assume you called the arg `data`.
-`data.id` is a 3-byte `Buffer`. `data.deviceCategory`, `data.deviceSubcategory`, and `data.firmwareVersion` are `Number`s.
+The `PLM` class can be accessed using `require("plm")`. It's the root class for the entire library, and you connect to an INSTEON modem by instantiating it. These docs will assume that you call `var PLM = require("plm");`.  
+Calling `new PLM("/dev/usbTTY0", callback)` (or wherever the serial port is [NOTE: `PLM` will NOT attempt to auto-detect your modem's serialport. This may change in the future, but for now, assume it won't]) will connect to the modem using the `serialport` module. These docs will assume that you call `var modem = new PLM(path, callback)`.  
+Once it's connected, `PLM` will send your modem the command `GET_IM_INFO (0x60)`. The modem will reply with some information about itself, including its hardcoded INSTEON ID, its Device Category, its Device Subcategory, and its firmware version. An object containing these will be passed as the first argument to the `callback` function; we'll assume you called the arg `data`.  
+`data.id` is a 3-byte `Buffer`. `data.deviceCategory`, `data.deviceSubcategory`, and `data.firmwareVersion` are `Number`s.  
 Once the `callback` has been called, `PLM` is ready to send and receive INSTEON and X10 commands.
 
 `modem.busy`
 ------------
-This `Boolean` keeps track of whether or not the modem is currently busy with a command.
-DO NOT modify this value; this may result in unexpected behavior.
+This `Boolean` keeps track of whether or not the modem is currently busy with a command.  
+DO NOT MODIFY THIS VALUE; this may result in unexpected behavior.  
 You probably don't have to worry about this, as `modem.sendCommand` and `modem.dequeue` deal with it for you.
 
 `modem.queue`
 -------------
-This `Array` is the queue of commands to be sent to the modem.
-Each item is an `Object` with format `{command: Buffer([...command data...]), callback: function(){}}`; the callback is optional, and will be called when the modem replies to the command.
+This `Array` is the queue of commands to be sent to the modem.  
+Each item is an `Object` with format `{command: Buffer([...command data...]), callback: function(){}}`; the callback is optional, and will be called when the modem replies to the command.  
 You probably don't have to worry about this, as `modem.sendCommand` and `modem.dequeue` deal with it for you.
 
 `modem.commandTimeout`
@@ -115,14 +115,14 @@ This method attempts to send the first item in the command queue to the modem. I
 
 `modem.sendCommandNow(command, callback)`
 -----------------------------------------
-This method prepends `STX (0x02)` to the `command` if necessary, then sends it directly to the modem using `modem.sendRaw`. The `callback` parameter will be passed to `modem.sendRaw`; it's only used to start timers internally, as it only fires when the command has been sent, not when a reply has been received.
-NOTE: YOU PROBABLY SHOULD NOT CALL THIS METHOD DIRECTLY. THE MODEM CANNOT HANDLE MULTIPLE CONCURRENT COMMANDS.
+This method prepends `STX (0x02)` to the `command` if necessary, then sends it directly to the modem using `modem.sendRaw`. The `callback` parameter will be passed to `modem.sendRaw`; it's only used to start timers internally, as it only fires when the command has been sent, not when a reply has been received.  
+NOTE: YOU PROBABLY SHOULD NOT CALL THIS METHOD DIRECTLY. THE MODEM CANNOT HANDLE MULTIPLE CONCURRENT COMMANDS.  
 The queue system keeps track of the modem's state and queues additional commands when the modem is busy. If a command is sent immediately without checking the modem's status, unexpected behavior may result. You have been warned.
 
 `modem.sendRaw(data, callback)`
 ---------------
-This method sends `data` directly to the modem without any preprocessing, queueing, or checking. `callback`, if present, will be called when the command has been sent (not when a reply has been received).
-NOTE: YOU PROBABLY SHOULD NOT CALL THIS METHOD DIRECTLY. THE MODEM CANNOT HANDLE MULTIPLE CONCURRENT COMMANDS. THE MODEM MAY NOT RESPOND CORRECTLY TO COMMANDS NOT BEGINNING WITH `STX (0x02)`.
+This method sends `data` directly to the modem without any preprocessing, queueing, or checking. `callback`, if present, will be called when the command has been sent (not when a reply has been received).  
+NOTE: YOU PROBABLY SHOULD NOT CALL THIS METHOD DIRECTLY. THE MODEM CANNOT HANDLE MULTIPLE CONCURRENT COMMANDS. THE MODEM MAY NOT RESPOND CORRECTLY TO COMMANDS NOT BEGINNING WITH `STX (0x02)`.  
 The queue system keeps track of the modem's state and queues additional commands when the modem is busy. If a command is sent immediately without checking the modem's status, unexpected behavior may result. You have been warned.
 
 TODO
