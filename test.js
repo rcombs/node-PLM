@@ -48,7 +48,7 @@ var commands = {
 		rl.pause();
 		modem.sendINSTEON({
 			to: util.parseHex(to),
-			command: util.parseHex(cmd),
+			command: util.parseHex(cmd, 2),
 			flags: {
 				maxHops: parseInt(hops, 10)
 			}
