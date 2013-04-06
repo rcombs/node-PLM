@@ -1,5 +1,5 @@
 {
-  "name": "PLM",
+  "name": "plm",
   "version": "0.1.0",
   "description": "Event-rich bidirectional communication with INSTEON PowerLinc modems",
   "main": "./lib/PLM.js",
@@ -15,9 +15,9 @@
   "repository": "",
   "keywords": [
     "PLM",
+    "IM",
     "INSTEON",
-    "Home",
-    "Automation",
+    "Home Automation",
     "Automation",
     "Control",
     "Serial",
