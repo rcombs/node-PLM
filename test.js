@@ -52,8 +52,14 @@ var commands = {
 			flags: {
 				maxHops: parseInt(hops, 10)
 			}
-		}, function(response){
-			console.log(JSON.stringify(response));
+		}, function(err, reply){
+			if(err){
+				console.error(err);
+			}else{
+				console.log("REPLY FROM: " + reply.flags);
+				console.log("COMMAND NUMBER: " + reply.command.number);
+				console.log("COMMAND DATA: " + reply.command.data);
+			}
 			rl.resume();
 			rl.prompt();
 		});
