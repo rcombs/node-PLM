@@ -56,9 +56,9 @@ var commands = {
 			if(err){
 				console.error(err);
 			}else{
-				console.log("REPLY FROM: " + reply.flags);
-				console.log("COMMAND NUMBER: " + reply.command.number);
-				console.log("COMMAND DATA: " + reply.command.data);
+				console.log("REPLY FROM: " + util.makeHex(reply.from));
+				console.log("COMMAND NUMBER: " + util.makeHex(reply.command.number));
+				console.log("COMMAND DATA: " + util.makeHex(reply.command.data));
 			}
 			rl.resume();
 			rl.prompt();
