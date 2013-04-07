@@ -87,7 +87,7 @@ You probably don't have to worry about this, as `modem.sendCommand` and `modem.d
 
 `modem.commandTimeout`
 ----------------------
-This `Number` represents the amount of time, in milliseconds, that `PLM` will wait for a response from a modem. `250` milliseconds is the default, as it's just above the amount of time after which the modem itself times out and clears its message buffer by default. If a response is not received after this time, your command's `callback`, if present, will be called with arguments `callback(false, false, false)`. Note that receiving a timeout callback is not a perfect guarantee that the command failed, a timeout will result in an automatic dequeue, and if a command times out and later a reply is received, the callback will not fire again. Set this to `false` to disable modem timeouts (this may result in unexpected behavior).
+This `Number` represents the amount of time, in milliseconds, that `PLM` will wait for a response from a modem. `250` milliseconds is the default, as it's just above the amount of time after which the modem itself times out and clears its message buffer by default. If a response is not received after this time, your command's `callback`, if present, will be called with its first argument as `MODEM_TIMEOUT` `Error`. Note that receiving a timeout callback is not a perfect guarantee that the command failed, a timeout will result in an automatic dequeue, and if a command times out and later a reply is received, the callback will not fire again. Set this to `false` to disable modem timeouts (this may result in unexpected behavior).
 
 `modem.INSTEONTimeout`
 ----------------------
@@ -99,19 +99,19 @@ This `Number` is identical to `modem.INSTEONTimeout`, except that it's used for 
 
 `modem.sendINSTEON(message, callback)`
 -------------------
-This method sends an INSTEON direct message from the modem. The message should be an `INSTEONMessage`. `callback` will be called when either the modem returns an error, the device replies, or either the modem or the device times out. The arguments are `callback(error, message)`, where `message` is the `INSTEONMessage` `ACK` sent by the device and `error` is either false (if the operation was successful) or one of `MODEM_NAK`, `MODEM_TIMEOUT`, `DEVICE_NAK`, or `DEVICE_TIMEOUT`. If the error is `DEVICE_TIMEOUT`, the `message` will still be provided. For other errors, `message` will be `undefined`.
+This method sends an INSTEON direct message from the modem. The message should be an `INSTEONMessage`. `callback` will be called when either the modem returns an error, the device replies, or either the modem or the device times out. The arguments are `callback(error, message)`, where `message` is the `INSTEONMessage` `ACK` sent by the device and `error` is either false (if the operation was successful) or one of `MODEM_NAK`, `MODEM_TIMEOUT`, `DEVICE_NAK`, or `DEVICE_TIMEOUT`. If the error is `DEVICE_NAK`, the `message` will still be provided. For other errors, `message` will be `undefined`.
 
 `modem.sendCommand(command, callback, jump)`
 --------------------------------------
-This method queues a command to be sent over the serial link to the modem, and tries to advance the queue. If the modem is busy with another command, this will return `false`, but the message will still be queued. If the `callback` arg is present, `callback(status, replyData, commandNumber)` will be called when the modem sends a reply. Arguments are:
-- `status` is a `Boolean`; `true` indicates the command was successful; `false` indicates a failure (taken from the raw reply's `ACK/NAK` byte)
+This method queues a command to be sent over the serial link to the modem, and tries to advance the queue. If the modem is busy with another command, this will return `false`, but the message will still be queued. If the `callback` arg is present, `callback(error, replyData, commandNumber)` will be called when the modem sends a reply. Arguments are:
+- `error` is either `false` or an error (either `MODEM_NAK` or `MODEM_TIMEOUT`),
 - `replyData` is a `Buffer` containing the modem's response data, not including the `STX`, command number, or `ACK/NAK` bytes.
 - `commandNumber` is a `Number` which should match the first byte of your original `command`.
 By default, `sendCommand` will `push` new commands on the end of the queue, but if your command is high-priority, you can set `jump` to `true`, and your command will be `unshift`ed onto the front of the queue.
 
 `modem.dequeue()`
 -----------------
-This method attempts to send the first item in the command queue to the modem. If the modem is busy, this method will return false. Otherwise, it will call `modem.sendCommandNow` with the first item in the queue, prepare event listeners and timeouts for the reply, and remove the item.
+This method attempts to send the first item in the command queue to the modem. If the modem is busy, this method will return `false`. Otherwise, it will call `modem.sendCommandNow` with the first item in the queue, prepare event listeners and timeouts for the reply, remove the item, and return `true`.
 
 `modem.sendCommandNow(command, callback)`
 -----------------------------------------
