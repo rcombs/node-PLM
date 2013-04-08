@@ -82,20 +82,30 @@ You probably don't have to worry about this, as `modem.sendCommand` and `modem.d
 `modem.queue`
 -------------
 This `Array` is the queue of commands to be sent to the modem.  
-Each item is an `Object` with format `{command: Buffer([...command data...]), callback: function(){}}`; the callback is optional, and will be called when the modem replies to the command.  
+Each item is an `Object` with format `{command: Buffer([...command data...]), callback: function(error, replyData, commandNumber){}}`; the callback is optional, and will be called when the modem replies to the command or times out.  
 You probably don't have to worry about this, as `modem.sendCommand` and `modem.dequeue` deal with it for you.
+
+`modem.INSTEONQueue`
+---------------------
+This `Array` represents the INSTEON message queue. Elements are in the format `{message: INSTEONMessage({...message data...}), callback: function(error, message){}}`; the callback is optional, and will be called when the modem sends an error, the device replies, or the command times out.  
+You probably don't have to worry about this, as `modem.sendINSTEON` and `modem.dequeue_INSTEON` deal with it for you.
 
 `modem.commandTimeout`
 ----------------------
 This `Number` represents the amount of time, in milliseconds, that `PLM` will wait for a response from a modem. `250` milliseconds is the default, as it's just above the amount of time after which the modem itself times out and clears its message buffer by default. If a response is not received after this time, your command's `callback`, if present, will be called with its first argument as `MODEM_TIMEOUT` `Error`. Note that receiving a timeout callback is not a perfect guarantee that the command failed, a timeout will result in an automatic dequeue, and if a command times out and later a reply is received, the callback will not fire again. Set this to `false` to disable modem timeouts (this may result in unexpected behavior).
 
-`modem.INSTEONTimeout`
+`modem.INSTEONStandardTimeout`
 ----------------------
-This `Number` represents the amount of time, in milliseconds, that `PLM` will wait for a response to an INSTEON direct message. `2000` milliseconds is the default; this is rather arbitrary and subject to change. This timeout is only set if a `callback` is provided to `modem.sendINSTEON`. Note that receiving a timeout callback is not a perfect guarantee that the command failed, and if the device timeout occurs, and the reply is later received, the callback will not fire again. Set this to `false` to disable device timeouts (this may result in unexpected behavior).
+This `Number` represents the amount of time, in milliseconds, that `PLM` will wait for a response to an INSTEON direct standard-length message. `2500` milliseconds is the default; this is rather arbitrary and subject to change. This timeout is only set if a `callback` is provided to `modem.sendINSTEON`. Note that receiving a timeout callback is not a perfect guarantee that the command failed, and if the device timeout occurs, and the reply is later received, the callback will not fire again. Set this to `false` to disable device timeouts (this may result in unexpected behavior).
+
+`modem.INSTEONExtendedTimeout`
+------------------
+This `Number` is identical to `modem.INSTEONStandardTimeout`, except that it's used for extended messages rather than standard-length ones. It defaults to `5000` milliseconds; this is rather arbitrary and subject to change.
+
 
 `modem.X10Timeout`
 ------------------
-This `Number` is identical to `modem.INSTEONTimeout`, except that it's used for X10 messages rather than INSTEON ones.
+This `Number` is identical to `modem.INSTEONStandardTimeout`, except that it's used for X10 messages rather than INSTEON ones. Note that X10 is not currently implemented, so this value has no effect.
 
 `modem.sendINSTEON(message, callback)`
 -------------------
@@ -111,13 +121,21 @@ By default, `sendCommand` will `push` new commands on the end of the queue, but 
 
 `modem.dequeue()`
 -----------------
-This method attempts to send the first item in the command queue to the modem. If the modem is busy, this method will return `false`. Otherwise, it will call `modem.sendCommandNow` with the first item in the queue, prepare event listeners and timeouts for the reply, remove the item, and return `true`.
+This method attempts to send the first item in the command queue to the modem. If the modem is busy, this method will return `false`. If there are no items in the queue, it will return `undefined`. Otherwise, it will call `modem.sendCommandNow` with the first item in the queue, prepare event listeners and timeouts for the reply, remove the item, and return `true`. You shouldn't have to worry about calling this, as `PLM` calls it automatically.
+
+`modem.INSTEONDequeue()`
+-------------------------
+This method is identical to `modem.dequeue`, except that it advances the INSTEON queue, rather than the modem command queue.
 
 `modem.sendCommandNow(command, callback)`
 -----------------------------------------
 This method prepends `STX (0x02)` to the `command` if necessary, then sends it directly to the modem using `modem.sendRaw`. The `callback` parameter will be passed to `modem.sendRaw`; it's only used to start timers internally, as it only fires when the command has been sent, not when a reply has been received.  
 NOTE: YOU PROBABLY SHOULD NOT CALL THIS METHOD DIRECTLY. THE MODEM CANNOT HANDLE MULTIPLE CONCURRENT COMMANDS.  
 The queue system keeps track of the modem's state and queues additional commands when the modem is busy. If a command is sent immediately without checking the modem's status, unexpected behavior may result. You have been warned.
+
+`modem.sendINSTEONNow(message, callback)`
+-----------------------------------------
+FIXME: DOCUMENT ME
 
 `modem.sendRaw(data, callback)`
 ---------------
