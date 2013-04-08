@@ -1,6 +1,6 @@
 {
   "name": "plm",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Event-rich bidirectional communication with INSTEON PowerLinc modems",
   "main": "./lib/PLM.js",
   "scripts": {
@@ -12,7 +12,14 @@
   "dependencies": {
     "serialport": "1.1.0"
   },
-  "repository": "",
+  "bugs": {
+    "url": "https://github.com/11rcombs/node-PLM/issues",
+    "email": "rodger.combs@gmail.com"
+  }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/11rcombs/node-PLM.git"
+  },
   "keywords": [
     "PLM",
     "IM",

@@ -3,6 +3,12 @@ CHANGELOG
 
 This document will be updated whenever the API changes.
 
+0.3.0
+-----
+- Added INSTEON queueing (hat tip to IceKarma)
+- Bugfixes
+- Improved package.json
+
 0.2.1
 -----
 - Bugfixes
