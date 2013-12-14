@@ -3,6 +3,10 @@ CHANGELOG
 
 This document will be updated whenever the API changes.
 
+0.3.2
+-----
+- Added minimum times between PLM and INSTEON commands
+
 0.3.0
 -----
 - Added INSTEON queueing (hat tip to IceKarma)

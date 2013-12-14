@@ -119,12 +119,17 @@ You probably don't have to worry about this, as `modem.sendINSTEON` and `modem.d
 ### `modem.commandTimeout`
 This `Number` represents the amount of time, in milliseconds, that `PLM` will wait for a response from a modem. `250` milliseconds is the default, as it's just above the amount of time after which the modem itself times out and clears its message buffer by default. If a response is not received after this time, your command's `callback`, if present, will be called with its first argument as `MODEM_TIMEOUT` `Error`. Note that receiving a timeout callback is not a perfect guarantee that the command failed, a timeout will result in an automatic dequeue, and if a command times out and later a reply is received, the callback will not fire again. Set this to `false` to disable modem timeouts (this may result in unexpected behavior).
 
+### `modem.minCommandInterval`
+This `Number` represents the minimum amount of time, in milliseconds, between the PLM acknowledging a previous command and the library advancing its queue and sending the next one. It defaults to `250`; this is rather arbitrary and is subject to change. A value of `0` disables this timer.
+
 ### `modem.INSTEONStandardTimeout`
 This `Number` represents the amount of time, in milliseconds, that `PLM` will wait for a response to an INSTEON direct standard-length message. `2500` milliseconds is the default; this is rather arbitrary and subject to change. This timeout is only set if a `callback` is provided to `modem.sendINSTEON`. Note that receiving a timeout callback is not a perfect guarantee that the command failed, and if the device timeout occurs, and the reply is later received, the callback will not fire again. Set this to `false` to disable device timeouts (this may result in unexpected behavior).
 
 ### `modem.INSTEONExtendedTimeout`
 This `Number` is identical to `modem.INSTEONStandardTimeout`, except that it's used for extended messages rather than standard-length ones. It defaults to `5000` milliseconds; this is rather arbitrary and subject to change.
 
+### `modem.minINSTEONInterval`
+This `Number` represents the minimum amount of time, in milliseconds, between receiving an `ACK`/`NAK` for an INSTEON command and the library advancing its queue and sending the next one. It defaults to `0`, which disables this timer.
 
 ### `modem.X10Timeout`
 This `Number` is identical to `modem.INSTEONStandardTimeout`, except that it's used for X10 messages rather than INSTEON ones. Note that X10 is not currently implemented, so this value has no effect.
